@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="paddedRoundBg">
+        <item name="android:background">@drawable/ssss3</item>
+        <item name="android:padding">8dp</item>
+        <item name="android:paddingStart">14dp</item>
+        <item name="android:paddingEnd">14dp</item>
+        <item name="android:textAlignment">center</item>
+    </style>
+</resources>

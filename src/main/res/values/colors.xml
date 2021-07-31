@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimaryLight">#D9F8F5</color>
+    <color name="colorPrimary">@color/teal_200</color>
+    <color name="purple_500">#FF6200EE</color>
+    <color name="purple_700">#FF3700B3</color>
+    <color name="teal_200">#FF03DAC5</color>
+    <color name="green">#00FF0A</color>
+    <color name="teal_700">#FF018786</color>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="gradient_top">#BF000000</color>
+    <color name="dialer_theme_color">#2A56C6</color>
+    <color name="incall_background_gradient_top">#80000000</color>
+
+    <color name="incall_background_gradient_bottom">#000000</color>
+    <color name="incall_background_gradient_middle">#BF000000</color>
+    <color name="toggle_bg">#9DDEFB</color>
+</resources>
