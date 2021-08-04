@@ -24,6 +24,7 @@ import androidx.core.graphics.ColorUtils
 import androidx.core.graphics.drawable.toBitmap
 import androidx.palette.graphics.Palette
 import com.google.android.material.snackbar.Snackbar
+import java.io.IOException
 import kotlin.math.roundToInt
 
 
@@ -31,16 +32,17 @@ object HelperConstant {
     var debug = true
 }
 
-public object UiUtil {
+object UiUtil {
     fun Context.toast(msg: Any?) =
         Toast.makeText(this, "$msg", Toast.LENGTH_SHORT).show()
+
     fun Activity.fullScreenActivity() {
         window.apply {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
                 setDecorFitsSystemWindows(false)
             }
             window.decorView.systemUiVisibility = FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS
-            //statusBarColor = Color.TRANSPARENT
+            statusBarColor = Color.TRANSPARENT
             navigationBarColor = Color.TRANSPARENT
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                 if (resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK != Configuration.UI_MODE_NIGHT_NO)
@@ -136,6 +138,19 @@ fun logit(msg: Any?) {
     }
 }
 
+fun isOnline(): Boolean {
+    val runtime = Runtime.getRuntime()
+    try {
+        val ipProcess = runtime.exec("/system/bin/ping -c 1 8.8.8.8")
+        val exitValue = ipProcess.waitFor()
+        return exitValue == 0
+    } catch (e: IOException) {
+        e.printStackTrace()
+    } catch (e: InterruptedException) {
+        e.printStackTrace()
+    }
+    return false
+}
 
 fun Int.misc(int: Int, int2: Int): Int {
     (this + int + int2).run {

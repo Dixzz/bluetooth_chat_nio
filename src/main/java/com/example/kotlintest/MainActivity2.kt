@@ -3,11 +3,10 @@ package com.example.kotlintest
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.animation.ValueAnimator
-import android.animation.ValueAnimator.AnimatorUpdateListener
 import android.app.WallpaperManager
+import android.content.Intent
 import android.graphics.drawable.Drawable
 import android.os.Bundle
-import android.util.Log
 import android.util.TypedValue
 import android.view.View
 import android.view.WindowManager
@@ -15,7 +14,6 @@ import android.view.animation.OvershootInterpolator
 import android.widget.ImageView
 import androidx.annotation.Dimension
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.Fragment
 import androidx.transition.TransitionManager
 import com.example.kotlintest.UiUtil.fullScreenActivity
 import com.example.kotlintest.UiUtil.quickSnack
@@ -23,12 +21,14 @@ import kotlinx.android.synthetic.main.activity_main.*
 import java.text.CharacterIterator
 import java.text.StringCharacterIterator
 import java.util.*
+import javax.inject.Inject
 import kotlin.math.abs
 import kotlin.system.measureTimeMillis
 
 
 private const val TAG = "MainActivity2"
 
+//@AndroidEntryPoint
 class MainActivity2 : AppCompatActivity() {
 
     override fun onStart() {
@@ -43,7 +43,7 @@ class MainActivity2 : AppCompatActivity() {
     }
 
     private fun extractWallpaper(drawable: Drawable) {
-        //root.background = drawable
+        root.background = drawable
         /*inCallUiBgNice.setImageDrawable(drawable)
         dummy.setImageDrawable(drawable)*/
         /*blurImage(this, drawable.toBitmap())?.let {
@@ -89,19 +89,45 @@ class MainActivity2 : AppCompatActivity() {
         val r = resources
         return TypedValue.applyDimension(
             TypedValue.COMPLEX_UNIT_DIP,
-            dp.toFloat(),
+            dp,
             r.displayMetrics
         )
     }
 
+    lateinit var m: MyApp
+
+    @Inject
+    lateinit var abc: SharedViewModel
+
     override fun onCreate(savedInstanceState: Bundle?) {
         this.fullScreenActivity()
+        m = application as MyApp
         window.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         root.quickSnack("Hey")
-        supportFragmentManager.beginTransaction().replace(root.id, Test2() as Fragment).commit()
+
+        abc.getMutable().observe(this, {
+            //logit(it)
+        })
+
+        oof2.setOnClickListener {
+            wew("yes")
+            startActivity(Intent(this, MainActivity::class.java))
+        }
+        oof2.setOnLongClickListener {
+            wew()
+            startActivity(Intent(this, MainActivity::class.java))
+            true
+        }
+        //supportFragmentManager.beginTransaction().replace(root.id, Test2() as Fragment).commit()
         //animateNotificationWithColor(Color.RED)
+    }
+
+
+    private fun wew(string: String = "99") {
+        p++
+        abc.postInData(p, string)
     }
 
     fun animateNotificationWithColor(color: Int) {
@@ -109,22 +135,22 @@ class MainActivity2 : AppCompatActivity() {
         leftView.setColorFilter(color)
         var mLightAnimator = ValueAnimator.ofFloat(*floatArrayOf(0.0f, 2.0f))
         val repeats = 0
-        mLightAnimator.setDuration(2000)
-        mLightAnimator.setRepeatCount(if (repeats == 0) ValueAnimator.INFINITE else repeats - 1)
-        mLightAnimator.setRepeatMode(ValueAnimator.RESTART)
-        mLightAnimator.addUpdateListener(AnimatorUpdateListener { animation ->
+        mLightAnimator.duration = 2000
+        mLightAnimator.repeatCount = ValueAnimator.INFINITE
+        mLightAnimator.repeatMode = ValueAnimator.RESTART
+        mLightAnimator.addUpdateListener { animation ->
             val progress =
                 (animation.animatedValue as Float).toFloat()
-            leftView.setScaleY(progress)
+            leftView.scaleY = progress
             var alpha = 1.0f
             if (progress <= 0.7f) {
                 alpha = progress / 0.7f
             } else if (progress >= 1.0f) {
                 alpha = 2.0f - progress
             }
-            leftView.setAlpha(alpha)
+            leftView.alpha = alpha
             logit(progress)
-        })
+        }
         mLightAnimator.start()
     }
 
@@ -136,22 +162,18 @@ class MainActivity2 : AppCompatActivity() {
         }
     }
 
-    fun logit(msg: Any?) {
-        if (HelperConstant.debug) {
-            val trace: StackTraceElement? = Thread.currentThread().stackTrace[3]
-            val lineNumber = trace?.lineNumber
-            val methodName = trace?.methodName
-            val className = trace?.fileName?.replaceAfter(".", "")?.replace(".", "")
-            Log.d("Line $lineNumber", "↓↓↓  $className::$methodName()  ↓↓↓")
-            Log.e("MSG", "$msg")
-        }
-        transX = ticker_comeback.translationY
-    }
-
     var transX: Float = 0f
+    var p: Double = 0.0
+
+
     fun doshit(view: View) {
         var moveX =
-            ObjectAnimator.ofFloat(ticker_comeback, View.TRANSLATION_Y, ticker_comeback.translationY, 0f)
+            ObjectAnimator.ofFloat(
+                ticker_comeback,
+                View.TRANSLATION_Y,
+                ticker_comeback.translationY,
+                0f
+            )
         moveX.addUpdateListener {
             if (it.animatedValue == 0f) {
                 TransitionManager.beginDelayedTransition(ticker_comeback)

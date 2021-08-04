@@ -10,7 +10,6 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.os.Message
-import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
@@ -22,22 +21,13 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.marginBottom
 import androidx.transition.TransitionManager
 import com.example.kotlintest.ExceptionHandler
-import com.example.kotlintest.HelperConstant
 import com.example.kotlintest.R
+import com.example.kotlintest.logit
 import kotlinx.android.synthetic.main.activity_bluetooth_main.*
 
 
 private lateinit var service: BluetoothChatService
-fun logit(msg: Any?) {
-    if (HelperConstant.debug) {
-        val trace: StackTraceElement? = Thread.currentThread().stackTrace[3]
-        val lineNumber = trace?.lineNumber
-        val methodName = trace?.methodName
-        val className = trace?.fileName?.replaceAfter(".", "")?.replace(".", "")
-        Log.d("Line $lineNumber", "↓↓↓  $className::$methodName()  ↓↓↓")
-        Log.e("MSG", "$msg")
-    }
-}
+
 
 class BluetoothMainActivity : AppCompatActivity() {
     private var connectedTo: String? = ""
